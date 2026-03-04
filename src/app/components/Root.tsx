@@ -8,6 +8,7 @@ import { Toaster } from "./ui/sonner";
 import { HelpSystem } from "./HelpSystem";
 import { UserType } from "../utils/pdfGenerator";
 import { VersionChecker } from "./VersionChecker";
+import { DebugPanel } from "./DebugPanel";
 
 // Check if we're in development mode (localStorage)
 const isDevelopmentMode = false; // Match USE_LOCAL_STORAGE in api.ts
@@ -476,6 +477,7 @@ export function Root() {
       <RootContent />
       <Toaster richColors position="top-right" />
       <VersionChecker />
+      <DebugPanel />
     </>
   );
 }
