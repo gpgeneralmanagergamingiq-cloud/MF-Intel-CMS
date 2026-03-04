@@ -1,9 +1,34 @@
 import { ThermalReceiptDual } from "./ThermalReceiptDual";
 import { sendEndOfDayReportToManagement } from "../utils/emailService";
+import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router";
+import {
+  DollarSign,
+  Plus,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Printer,
+  Edit,
+  AlertCircle,
+  TrendingDown,
+  TrendingUp,
+  CheckCircle,
+  XCircle,
+  Clock,
+  FileText,
+  Table as TableIcon,
+  User,
+  Calendar,
+  Filter,
+  Eye,
+  Download,
+  ArrowUpDown,
+  RotateCcw,
+} from "lucide-react";
+import { ThermalReceiptDual } from "./ThermalReceiptDual";
+import { sendEndOfDayReportToManagement } from "../utils/emailService";
 import { useApi } from "../hooks/useApi";
-import { ViewOnlyBanner } from "./ViewOnlyBanner";
-
-// Hardcoded property - Grand Palace Casino
 const PROPERTY_NAME = "Grand Palace Casino";
 
 interface ChipDenomination {
