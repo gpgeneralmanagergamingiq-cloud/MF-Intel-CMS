@@ -36,9 +36,7 @@ export function Cage() {
       <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
         <Vault className="w-16 h-16 text-slate-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-slate-700 mb-2">Cage Operations Module</h2>
-        <p className="text-slate-500">
-          This module manages vault transfers, chip exchanges, and cage operations.
-        </p>
+        <p className="text-slate-500">Module in development</p>
       </div>
     </div>
   );
