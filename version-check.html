@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 CMS Version Check</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .version {
+            background: #667eea;
+            color: white;
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .check-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .check-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .check-item p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .success { border-left-color: #22c55e; background: #f0fdf4; }
+        .warning { border-left-color: #f59e0b; background: #fffbeb; }
+        .error { border-left-color: #ef4444; background: #fef2f2; }
+        .timestamp {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+        .code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 Casino CMS</h1>
+        <div class="version">v2.1.0 - FCFA Update</div>
+        
+        <div class="check-item success">
+            <h3>✅ Files Successfully Uploaded</h3>
+            <p>If you can see this page, your files are uploaded correctly to the server.</p>
+        </div>
+        
+        <div class="check-item warning">
+            <h3>⚠️ Currency Still Showing PHP?</h3>
+            <p>Your browser has <strong>aggressively cached</strong> the old JavaScript files. Follow the steps below:</p>
+        </div>
+        
+        <div class="check-item">
+            <h3>🔧 Step 1: Clear Browser Cache</h3>
+            <p><strong>Windows:</strong> Press <span class="code">Ctrl + Shift + Delete</span><br>
+            <strong>Mac:</strong> Press <span class="code">Cmd + Shift + Delete</span><br>
+            Select "All time" → Check "Cached images and files" → Click "Clear data"</p>
+        </div>
+        
+        <div class="check-item">
+            <h3>🔧 Step 2: Hard Refresh</h3>
+            <p><strong>Windows:</strong> Press <span class="code">Ctrl + F5</span> or <span class="code">Ctrl + Shift + R</span><br>
+            <strong>Mac:</strong> Press <span class="code">Cmd + Shift + R</span></p>
+        </div>
+        
+        <div class="check-item">
+            <h3>🔧 Step 3: Try Incognito Mode</h3>
+            <p>Open a new incognito/private window and visit the site. If it works there, it confirms a cache issue.</p>
+        </div>
+        
+        <div class="check-item success">
+            <h3>✅ Expected Result</h3>
+            <p>After clearing cache, you should see:<br>
+            • Summary cards show <strong>"FCFA 0"</strong> (not "PHP 0")<br>
+            • No JavaScript errors in console<br>
+            • FloatForm opens without errors</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="/Casino" class="btn">Open Casino CMS →</a>
+        </div>
+        
+        <div class="timestamp">
+            <strong>Build Date:</strong> February 28, 2026<br>
+            <strong>Build Time:</strong> <span id="time"></span>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleTimeString();
+    </script>
+</body>
+</html>

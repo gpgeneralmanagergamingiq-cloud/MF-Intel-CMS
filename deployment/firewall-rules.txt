@@ -1,0 +1,299 @@
+# MF-Intel CMS - Firewall Rules
+# For pfSense, OPNsense, or iptables
+# Adjust interface names and IP ranges for your network
+
+# =============================================================================
+# NETWORK CONFIGURATION
+# =============================================================================
+# VLAN 10 (Management):   192.168.10.0/24  - Server, Network Equipment
+# VLAN 20 (Gaming Floor): 192.168.20.0/24  - Pit Desktops, Inspectors
+# VLAN 30 (Wireless):     192.168.30.0/24  - Tablets, Phones
+# VLAN 40 (Guest):        192.168.40.0/24  - Customer WiFi
+# Server IP:              192.168.10.10
+
+# =============================================================================
+# INBOUND RULES (Internet → Firewall)
+# =============================================================================
+
+# Rule 1: Block all inbound by default (unless explicitly allowed)
+# Default Action: DENY ALL
+
+# Rule 2: Allow VPN access for remote management (optional)
+# Protocol: UDP, Port: 51820 (WireGuard) or 1194 (OpenVPN)
+# Source: Any
+# Destination: Firewall WAN IP
+# Action: ALLOW
+
+# Rule 3: Allow ICMP (ping) for monitoring (optional)
+# Protocol: ICMP
+# Source: Trusted IPs only
+# Destination: Firewall WAN IP
+# Action: ALLOW
+
+# =============================================================================
+# MANAGEMENT VLAN (192.168.10.0/24) → Internet
+# =============================================================================
+
+# Rule 10: Allow server to sync with Supabase Cloud
+# Source: 192.168.10.10 (Server)
+# Destination: Any
+# Protocol: TCP
+# Ports: 443 (HTTPS)
+# Action: ALLOW
+# Description: Supabase cloud sync
+
+# Rule 11: Allow server to send emails (optional)
+# Source: 192.168.10.10 (Server)
+# Destination: Any
+# Protocol: TCP
+# Ports: 587 (SMTP), 465 (SMTPS)
+# Action: ALLOW
+# Description: Email notifications
+
+# Rule 12: Allow server to access NTP (time sync)
+# Source: 192.168.10.10 (Server)
+# Destination: Any
+# Protocol: UDP
+# Port: 123
+# Action: ALLOW
+# Description: Time synchronization
+
+# Rule 13: Allow server to access DNS
+# Source: 192.168.10.10 (Server)
+# Destination: Any
+# Protocol: UDP/TCP
+# Port: 53
+# Action: ALLOW
+# Description: DNS resolution
+
+# Rule 14: Allow server to download updates
+# Source: 192.168.10.10 (Server)
+# Destination: Any
+# Protocol: TCP
+# Ports: 80, 443
+# Action: ALLOW
+# Description: System updates
+
+# =============================================================================
+# GAMING FLOOR VLAN (192.168.20.0/24) → Server
+# =============================================================================
+
+# Rule 20: Allow gaming floor to access casino app (HTTP/HTTPS)
+# Source: 192.168.20.0/24
+# Destination: 192.168.10.10 (Server)
+# Protocol: TCP
+# Ports: 80, 443, 54321
+# Action: ALLOW
+# Description: Casino CMS access
+
+# Rule 21: Allow gaming floor to access Supabase local
+# Source: 192.168.20.0/24
+# Destination: 192.168.10.10 (Server)
+# Protocol: TCP
+# Port: 54321
+# Action: ALLOW
+# Description: Supabase API access
+
+# Rule 22: Block gaming floor from accessing other internal networks
+# Source: 192.168.20.0/24
+# Destination: 192.168.10.0/24, 192.168.30.0/24, 192.168.40.0/24
+# Protocol: Any
+# Action: DENY
+# Description: Isolate gaming floor
+
+# Rule 23: Block gaming floor from accessing internet
+# Source: 192.168.20.0/24
+# Destination: Any (Internet)
+# Protocol: Any
+# Action: DENY
+# Description: No internet access for floor
+
+# =============================================================================
+# WIRELESS VLAN (192.168.30.0/24) → Server
+# =============================================================================
+
+# Rule 30: Allow wireless devices to access casino app (HTTPS only)
+# Source: 192.168.30.0/24
+# Destination: 192.168.10.10 (Server)
+# Protocol: TCP
+# Ports: 443, 54321
+# Action: ALLOW
+# Description: Casino CMS access (HTTPS only)
+
+# Rule 31: Allow wireless devices to access internet (managers/owners)
+# Source: 192.168.30.0/24
+# Destination: Any (Internet)
+# Protocol: TCP
+# Ports: 80, 443
+# Action: ALLOW
+# Description: Internet browsing
+
+# Rule 32: Block wireless from accessing other VLANs
+# Source: 192.168.30.0/24
+# Destination: 192.168.20.0/24, 192.168.40.0/24
+# Protocol: Any
+# Action: DENY
+# Description: VLAN isolation
+
+# =============================================================================
+# GUEST VLAN (192.168.40.0/24) → Internet Only
+# =============================================================================
+
+# Rule 40: Allow guest WiFi to access internet only
+# Source: 192.168.40.0/24
+# Destination: Any (Internet)
+# Protocol: TCP/UDP
+# Ports: 80, 443
+# Action: ALLOW
+# Description: Guest internet access
+
+# Rule 41: Block guest WiFi from all internal networks
+# Source: 192.168.40.0/24
+# Destination: 192.168.10.0/24, 192.168.20.0/24, 192.168.30.0/24
+# Protocol: Any
+# Action: DENY
+# Description: Complete isolation
+
+# =============================================================================
+# SERVER (192.168.10.10) → Internal Networks
+# =============================================================================
+
+# Rule 50: Allow server to respond to gaming floor
+# Source: 192.168.10.10 (Server)
+# Destination: 192.168.20.0/24
+# Protocol: TCP
+# State: ESTABLISHED, RELATED
+# Action: ALLOW
+# Description: Return traffic
+
+# Rule 51: Allow server to respond to wireless
+# Source: 192.168.10.10 (Server)
+# Destination: 192.168.30.0/24
+# Protocol: TCP
+# State: ESTABLISHED, RELATED
+# Action: ALLOW
+# Description: Return traffic
+
+# =============================================================================
+# LOGGING & MONITORING
+# =============================================================================
+
+# Rule 60: Log all denied traffic
+# Action: LOG
+# Description: Security audit
+
+# Rule 61: Log all accepted traffic to server
+# Action: LOG
+# Description: Access audit
+
+# =============================================================================
+# RATE LIMITING (DDoS Protection)
+# =============================================================================
+
+# Rule 70: Limit connections per IP to server
+# Limit: 100 connections per minute per source IP
+# Protocol: TCP
+# Destination: 192.168.10.10:443
+# Action: LIMIT
+# Description: DDoS protection
+
+# =============================================================================
+# IPTABLES IMPLEMENTATION (Ubuntu/Debian Server)
+# =============================================================================
+
+# Save as: /etc/iptables/casino-rules.sh
+# Run: sudo chmod +x /etc/iptables/casino-rules.sh && sudo ./casino-rules.sh
+
+#!/bin/bash
+
+# Flush existing rules
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+
+# Default policies
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+# Allow loopback
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Allow established connections
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow SSH (from management network only)
+iptables -A INPUT -p tcp -s 192.168.10.0/24 --dport 22 -j ACCEPT
+
+# Allow HTTP/HTTPS from gaming floor
+iptables -A INPUT -p tcp -s 192.168.20.0/24 --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp -s 192.168.20.0/24 --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp -s 192.168.20.0/24 --dport 54321 -j ACCEPT
+
+# Allow HTTPS from wireless
+iptables -A INPUT -p tcp -s 192.168.30.0/24 --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp -s 192.168.30.0/24 --dport 54321 -j ACCEPT
+
+# Rate limiting (DDoS protection)
+iptables -A INPUT -p tcp --dport 443 -m limit --limit 100/minute -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j DROP
+
+# Log dropped packets
+iptables -A INPUT -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+
+# Save rules
+iptables-save > /etc/iptables/rules.v4
+
+# =============================================================================
+# PFSENSE/OPNSENSE IMPLEMENTATION
+# =============================================================================
+
+# Use the web UI to create rules in this order:
+# 1. Navigate to Firewall → Rules
+# 2. Create rules per VLAN interface
+# 3. Set rule order (more specific rules first)
+# 4. Enable logging on security-critical rules
+# 5. Test each rule before deploying to production
+
+# =============================================================================
+# VERIFICATION COMMANDS
+# =============================================================================
+
+# Test connectivity from each VLAN:
+# From Gaming Floor (192.168.20.x):
+curl -I http://192.168.10.10        # Should work
+curl -I http://192.168.30.1         # Should fail (blocked)
+curl -I http://google.com           # Should fail (no internet)
+
+# From Wireless (192.168.30.x):
+curl -I https://192.168.10.10       # Should work
+curl -I http://192.168.20.1         # Should fail (blocked)
+curl -I https://google.com          # Should work
+
+# From Guest (192.168.40.x):
+curl -I http://192.168.10.10        # Should fail (blocked)
+curl -I https://google.com          # Should work
+
+# =============================================================================
+# MONITORING
+# =============================================================================
+
+# Monitor firewall logs:
+tail -f /var/log/iptables.log
+
+# View active connections:
+netstat -an | grep ESTABLISHED
+
+# View connection count per IP:
+netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n
+
+# =============================================================================
+# MAINTENANCE
+# =============================================================================
+
+# Weekly: Review logs for suspicious activity
+# Monthly: Review and update rules
+# Quarterly: Penetration testing
+# Annually: Full security audit

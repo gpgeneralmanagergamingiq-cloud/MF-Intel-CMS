@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Cache Control Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <title>MF-Intel CMS for Gaming IQ</title>
+    
+    <!-- Version info for debugging -->
+    <meta name="version" content="2.3.2" />
+    <meta name="build-date" content="2026-03-04" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+    
+    <!-- Cache detection script -->
+    <script>
+      // Detect if this is a cached version
+      const buildVersion = '2.3.2';
+      const buildDate = '2026-03-04';
+      
+      // Store version info
+      if (localStorage.getItem('cms_version') !== buildVersion) {
+        console.log('%c🔄 New version detected! Clearing old cache...', 'background: #667eea; color: white; padding: 5px; font-weight: bold;');
+        localStorage.setItem('cms_version', buildVersion);
+        localStorage.setItem('cms_build_date', buildDate);
+        
+        // Clear old cache
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => caches.delete(name));
+          });
+        }
+      }
+      
+      console.log('%c📦 Casino CMS ' + buildVersion + ' - Build: ' + buildDate, 'background: #22c55e; color: white; padding: 5px; font-weight: bold;');
+    </script>
+  </body>
+</html>

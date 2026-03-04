@@ -1,0 +1,22 @@
+			Hands/Hour						
+Table Number	GameType	House Advantage	1 to 2 Players	3 to 4 Players	more that 5 Players	Theoretical Win 	Theoretical Win / Day	Number of Points	Tombola Tickets
+UTH01	UltimateTexasHoldem	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+UTH02	UltimateTexasHoldem	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+UTH03	UltimateTexasHoldem	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+NIUNIU01	NIUNIU	5%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+NIUNIU02	NIUNIU	5%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+NIUNIU03	NIUNIU	5%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BAC01	Baccarat	1.20%	60	50	40	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BAC02	Baccarat	1.20%	60	50	40	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BAC03	Baccarat	1.20%	60	50	40	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BAC04	Baccarat	1.20%	60	50	40	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BJ01	BlackJack	1.20%	120	90	70	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+BJ02	BlackJack	1.20%	120	90	70	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+PK01	Poker	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+PK02	Poker	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+PK03	Poker	2.50%	35	30	25	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+TX01	Texas Holde'm	0.00%						1 point for 15 minutes of play	1 Tiket every 10 Minutes of Play
+TX02	Texas Holde'm	0.00%						2 point for 15 minutes of play	1 Tiket every 10 Minutes of Play
+AR01	Roulette	2.70%	50	40	30	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+AR02	Roulette	2.70%	50	40	30	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets
+AR03	Roulette	2.70%	50	40	30	"=House Advantage*Hands/Hour*AverageBet"	"=Theoretical Win/ Number of Days"	1 point for every 10000 Bet	1 tiket for 100000 bets

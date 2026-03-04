@@ -1,0 +1,253 @@
+# 🗺️ DEPLOYMENT ROADMAP: Supabase Cloud + Vercel
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                                                                      │
+│                    MF-INTEL CMS DEPLOYMENT                           │
+│                    Supabase Cloud + Vercel                           │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+
+┌─────────────────────┐
+│  PHASE 1: ACCOUNTS  │  (10 minutes)
+└─────────────────────┘
+           │
+           ├─→ [1] Create Supabase Account
+           │      https://supabase.com/dashboard
+           │      ✓ Sign up with GitHub
+           │      ✓ Verify email
+           │
+           └─→ [2] Create Vercel Account
+                  https://vercel.com/signup
+                  ✓ Sign up with GitHub
+                  ✓ Authorize GitHub access
+
+
+┌────────────────────────┐
+│  PHASE 2: SUPABASE     │  (30 minutes)
+└────────────────────────┘
+           │
+           ├─→ [3] Create Supabase Project
+           │      ✓ Project name: mf-intel-cms
+           │      ✓ Database password: [SAVE THIS!]
+           │      ✓ Region: Choose closest
+           │      ⏳ Wait 2-3 minutes
+           │
+           ├─→ [4] Copy Credentials
+           │      Settings → API
+           │      ✓ Project URL
+           │      ✓ Anon/Public key
+           │      ✓ Service Role key
+           │      💾 Save in password manager!
+           │
+           ├─→ [5] Setup Database
+           │      SQL Editor → New Query
+           │      📄 Copy from: /supabase/migrations/001_initial_setup.sql
+           │      ▶️  Run SQL
+           │      ✅ Verify: SELECT * FROM kv_store_68939c29;
+           │
+           └─→ [6] Deploy Edge Function
+                  Terminal commands:
+                  $ brew install supabase/tap/supabase
+                  $ supabase login
+                  $ supabase link --project-ref YOUR_REF
+                  $ supabase functions deploy server
+                  $ supabase secrets set SUPABASE_URL="..."
+                  $ supabase secrets set SUPABASE_ANON_KEY="..."
+                  $ supabase secrets set SUPABASE_SERVICE_ROLE_KEY="..."
+                  ✅ Test: curl .../health → {"status":"ok"}
+
+
+┌────────────────────────┐
+│  PHASE 3: GITHUB       │  (10 minutes)
+└────────────────────────┘
+           │
+           ├─→ [7] Create GitHub Repository
+           │      ✓ New repository
+           │      ✓ Name: mf-intel-cms
+           │      ✓ Private (recommended)
+           │
+           └─→ [8] Push Code
+                  Terminal commands:
+                  $ git add .
+                  $ git commit -m "Production deployment"
+                  $ git remote add origin https://github.com/...
+                  $ git push origin main
+                  ✅ Code pushed to GitHub
+
+
+┌────────────────────────┐
+│  PHASE 4: VERCEL       │  (20 minutes)
+└────────────────────────┘
+           │
+           ├─→ [9] Import Project
+           │      https://vercel.com/new
+           │      ✓ Import Git Repository
+           │      ✓ Select: mf-intel-cms
+           │      ✓ Framework: Vite (auto-detected)
+           │
+           ├─→ [10] Configure Environment Variables
+           │       ✓ VITE_SUPABASE_URL = https://xxx.supabase.co
+           │       ✓ VITE_SUPABASE_ANON_KEY = eyJhbGc...
+           │       ⚠️ Must start with VITE_
+           │
+           ├─→ [11] Deploy
+           │       Click [Deploy]
+           │       ⏳ Wait 2-5 minutes
+           │       ✅ Deployment successful!
+           │
+           └─→ [12] Get Production URL
+                   https://your-app.vercel.app
+                   💾 Save this URL!
+
+
+┌────────────────────────┐
+│  PHASE 5: TESTING      │  (30 minutes)
+└────────────────────────┘
+           │
+           ├─→ [13] Visit App
+           │       Open: https://your-app.vercel.app
+           │       ✓ Page loads
+           │       ✓ No console errors
+           │       ✓ Login page appears
+           │
+           ├─→ [14] Test Login
+           │       ✓ Username: admin
+           │       ✓ Password: admin123
+           │       ✓ Successfully authenticates
+           │       ✓ Dashboard loads
+           │
+           ├─→ [15] Test Core Features
+           │       ✓ Create test player
+           │       ✓ Start rating session
+           │       ✓ Record comp
+           │       ✓ Generate report
+           │       ✓ Test QR scanning
+           │
+           └─→ [16] Performance Check
+                   ✓ Page load time < 3s
+                   ✓ API calls respond quickly
+                   ✓ No error messages
+                   ✓ Database queries work
+
+
+┌────────────────────────┐
+│  PHASE 6: GO LIVE      │  (Ongoing)
+└────────────────────────┘
+           │
+           ├─→ [17] Create User Accounts
+           │       Setup → User Management
+           │       ✓ Create accounts for all staff
+           │       ✓ Assign correct user types
+           │       ✓ Set passwords
+           │
+           ├─→ [18] Import Data
+           │       ✓ Import player database
+           │       ✓ Setup table configurations
+           │       ✓ Configure properties
+           │
+           ├─→ [19] Train Staff
+           │       ✓ Share user guides (7 guides created!)
+           │       ✓ Schedule training sessions
+           │       ✓ Distribute login credentials
+           │
+           ├─→ [20] Monitor
+           │       ✓ Supabase Dashboard → Logs
+           │       ✓ Vercel Dashboard → Analytics
+           │       ✓ Set up alerts
+           │
+           └─→ [21] Maintain
+                   ✓ Daily database backups
+                   ✓ Weekly performance review
+                   ✓ Monthly security audit
+                   ✓ Continuous improvements
+
+
+┌────────────────────────────────────────────────────────────────────┐
+│                         DEPLOYMENT COMPLETE! ✅                     │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│  Frontend:  https://your-app.vercel.app                           │
+│  Backend:   https://xxx.supabase.co/functions/v1/server           │
+│  Database:  Managed by Supabase                                   │
+│                                                                    │
+│  Status:    🟢 LIVE IN PRODUCTION                                 │
+│  Users:     Ready for up to 50 concurrent                         │
+│  Cost:      $0/month (free tier)                                  │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════
+                            TIME BREAKDOWN
+═══════════════════════════════════════════════════════════════════════
+
+Phase 1: Accounts           →  10 minutes  ▓▓░░░░░░░░░░░░░░░░░░
+Phase 2: Supabase          →  30 minutes  ▓▓▓▓▓▓░░░░░░░░░░░░░░
+Phase 3: GitHub            →  10 minutes  ▓▓░░░░░░░░░░░░░░░░░░
+Phase 4: Vercel            →  20 minutes  ▓▓▓▓░░░░░░░░░░░░░░░░
+Phase 5: Testing           →  30 minutes  ▓▓▓▓▓▓░░░░░░░░░░░░░░
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL DEPLOYMENT TIME      →  100 minutes ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+Phase 6: Go Live           →  Ongoing     (After deployment)
+
+
+═══════════════════════════════════════════════════════════════════════
+                          SUCCESS METRICS
+═══════════════════════════════════════════════════════════════════════
+
+✅ App is accessible via public URL
+✅ Login authentication works
+✅ Database connection successful
+✅ API endpoints responding
+✅ All features functional
+✅ No console errors
+✅ Performance acceptable (< 3s load)
+✅ Mobile responsive
+✅ Security configured
+✅ Monitoring active
+
+
+═══════════════════════════════════════════════════════════════════════
+                         SUPPORT CHECKLIST
+═══════════════════════════════════════════════════════════════════════
+
+📚 Documentation:
+   ✓ DEPLOYMENT_GUIDE_SUPABASE_VERCEL.md (30+ pages)
+   ✓ DEPLOYMENT_CHECKLIST.md (Quick reference)
+   ✓ DEPLOYMENT_COMMANDS.sh (Copy-paste commands)
+   ✓ 7 User Guides (605+ pages total)
+
+🔧 Configuration Files:
+   ✓ .env.example (Environment template)
+   ✓ .gitignore (Security)
+   ✓ vercel.json (Vercel config)
+   ✓ 001_initial_setup.sql (Database)
+
+💡 Troubleshooting:
+   ✓ Common issues documented
+   ✓ Solution steps provided
+   ✓ Support resources listed
+   ✓ Community links included
+
+
+═══════════════════════════════════════════════════════════════════════
+                            NEXT STEPS
+═══════════════════════════════════════════════════════════════════════
+
+1. 📖 Read:  DEPLOYMENT_GUIDE_SUPABASE_VERCEL.md
+2. ✅ Follow: DEPLOYMENT_CHECKLIST.md
+3. 🚀 Deploy: Execute deployment commands
+4. ✨ Go Live: Start managing your casino!
+
+
+═══════════════════════════════════════════════════════════════════════
+                      YOU'RE READY TO DEPLOY! 🎉
+═══════════════════════════════════════════════════════════════════════
+
+                     Casino Management System v2.3.0
+                          Production Ready
+                            March 2026
+```

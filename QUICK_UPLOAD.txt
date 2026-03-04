@@ -1,0 +1,56 @@
+═══════════════════════════════════════════════════════════════════
+  🚀 UPLOAD RAPID LA GITHUB - 3 COMENZI 🚀
+═══════════════════════════════════════════════════════════════════
+
+Windows (Command Prompt):
+─────────────────────────
+  git-push-to-github.bat
+
+
+Linux/Mac (Terminal):
+─────────────────────
+  chmod +x git-push-to-github.sh
+  ./git-push-to-github.sh
+
+
+SAU Git Manual:
+───────────────
+  git init
+  git remote add origin https://github.com/gpgeneralmanagergamingiq-cloud/MF-Intel-CMS.git
+  git add .
+  git commit -m "Initial commit - v2.3.2"
+  git branch -M main
+  git push -u origin main
+
+═══════════════════════════════════════════════════════════════════
+
+DUPĂ PUSH:
+──────────
+  ✅ Deployment automat pornește
+  ✅ Durată: 3-5 minute
+  ✅ Aplicația devine LIVE automat
+
+═══════════════════════════════════════════════════════════════════
+
+MONITORIZARE:
+─────────────
+  GitHub Actions:
+  https://github.com/gpgeneralmanagergamingiq-cloud/MF-Intel-CMS/actions
+
+  Live App:
+  https://app.mfintelcms.com/GrandPalace
+
+═══════════════════════════════════════════════════════════════════
+
+PERSONAL ACCESS TOKEN (pentru git push password):
+──────────────────────────────────────────────────
+  1. https://github.com/settings/tokens/new
+  2. Permisiuni: repo (all)
+  3. Generează și copiază
+  4. Folosește ca parolă când faci git push
+
+═══════════════════════════════════════════════════════════════════
+
+ASTA E TOT! 🎉
+
+═══════════════════════════════════════════════════════════════════

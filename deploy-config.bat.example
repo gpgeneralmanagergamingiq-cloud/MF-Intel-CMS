@@ -1,0 +1,27 @@
+REM ============================================
+REM FTP Configuration for Casino CMS Deployment
+REM ============================================
+REM
+REM IMPORTANT: Keep this file secure and do NOT commit to Git!
+REM This file contains your FTP credentials.
+REM
+
+REM FTP Server Hostname
+REM Usually: ftp.yourdomain.com or ftp.gamingiq.net
+set FTP_HOST=ftp.gamingiq.net
+
+REM FTP Username
+REM Your cPanel username or FTP account username
+set FTP_USER=your-ftp-username
+
+REM FTP Password
+REM Your cPanel password or FTP account password
+set FTP_PASS=your-ftp-password
+
+REM Remote Directory
+REM The path on the server where files should be uploaded
+REM Usually: /public_html/Casino or /public_html/subdomain
+set FTP_REMOTE_DIR=/public_html/Casino
+
+REM FTP Port (usually 21 for standard FTP)
+set FTP_PORT=21

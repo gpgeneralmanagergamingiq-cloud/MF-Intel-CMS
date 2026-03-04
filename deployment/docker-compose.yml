@@ -1,0 +1,216 @@
+# MF-Intel CMS - Docker Compose for Supabase Local
+# This runs Supabase locally on your dedicated server
+# 
+# Installation:
+# 1. Install Docker: curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh
+# 2. Install Docker Compose: sudo apt install docker-compose-plugin
+# 3. Save this file as: /opt/casino-cms/docker-compose.yml
+# 4. Run: sudo docker compose up -d
+#
+# Access:
+# - API URL: http://localhost:54321
+# - DB URL: postgresql://postgres:your-super-secret-password@localhost:54322/postgres
+# - Studio URL: http://localhost:54323 (Supabase Admin UI)
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: supabase/postgres:15.1.0.117
+    container_name: casino_postgres
+    restart: unless-stopped
+    ports:
+      - "54322:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-password}
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backups:/backups
+    networks:
+      - casino-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: 
+      - postgres
+      - -c
+      - max_connections=200
+      - -c
+      - shared_buffers=256MB
+
+  # Supabase Studio (Admin UI)
+  studio:
+    image: supabase/studio:20231123-64a766a
+    container_name: casino_studio
+    restart: unless-stopped
+    ports:
+      - "54323:3000"
+    environment:
+      SUPABASE_URL: http://kong:8000
+      STUDIO_PG_META_URL: http://meta:8080
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+  # Kong API Gateway
+  kong:
+    image: kong:2.8.1
+    container_name: casino_kong
+    restart: unless-stopped
+    ports:
+      - "54321:8000"
+      - "54444:8443"
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl
+    volumes:
+      - ./kong.yml:/var/lib/kong/kong.yml:ro
+    networks:
+      - casino-network
+
+  # Supabase Auth
+  auth:
+    image: supabase/gotrue:v2.99.0
+    container_name: casino_auth
+    restart: unless-stopped
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:54321}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-your-super-secret-password}@postgres:5432/postgres?search_path=auth
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
+      GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+  # Supabase REST API
+  rest:
+    image: postgrest/postgrest:v11.2.0
+    container_name: casino_rest
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD:-your-super-secret-password}@postgres:5432/postgres
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,storage,graphql_public}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+  # Supabase Realtime
+  realtime:
+    image: supabase/realtime:v2.10.1
+    container_name: casino_realtime
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-password}
+      DB_SSL: "false"
+      PORT: 4000
+      JWT_SECRET: ${JWT_SECRET}
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+  # Supabase Storage
+  storage:
+    image: supabase/storage-api:v0.40.4
+    container_name: casino_storage
+    restart: unless-stopped
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-your-super-secret-password}@postgres:5432/postgres
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+    volumes:
+      - storage-data:/var/lib/storage
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+  # PostgreSQL Meta (for Studio)
+  meta:
+    image: supabase/postgres-meta:v0.68.0
+    container_name: casino_meta
+    restart: unless-stopped
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: postgres
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: postgres
+      PG_META_DB_USER: postgres
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-password}
+    networks:
+      - casino-network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
+    driver: local
+  storage-data:
+    driver: local
+
+networks:
+  casino-network:
+    driver: bridge
+
+# To use this file:
+# 1. Create .env file with these variables:
+#
+# POSTGRES_PASSWORD=your-super-secret-password-change-this
+# JWT_SECRET=your-super-secret-jwt-token-with-at-least-32-characters-long
+# ANON_KEY=your-anon-key
+# SERVICE_ROLE_KEY=your-service-role-key
+# API_EXTERNAL_URL=http://192.168.10.10:54321
+# SITE_URL=http://192.168.10.10
+#
+# 2. Generate keys:
+# JWT_SECRET: openssl rand -base64 32
+# ANON_KEY & SERVICE_ROLE_KEY: Use Supabase CLI or generate JWT tokens
+#
+# 3. Start services:
+# sudo docker compose up -d
+#
+# 4. Check status:
+# sudo docker compose ps
+#
+# 5. View logs:
+# sudo docker compose logs -f
+#
+# 6. Stop services:
+# sudo docker compose down

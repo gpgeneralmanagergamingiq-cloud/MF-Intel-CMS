@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MF-Intel CMS - API Diagnostic Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #fef2f2;
+            border-left-color: #ef4444;
+            color: #dc2626;
+        }
+        .success {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+            color: #16a34a;
+        }
+        .test-group {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .test-group:last-child {
+            border-bottom: none;
+        }
+        h2 {
+            color: #334155;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .info {
+            background: #fef9c3;
+            border: 1px solid #fde047;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #713f12;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 MF-Intel CMS - API Diagnostic Test</h1>
+        <p class="subtitle">Test your Property Management API endpoints</p>
+
+        <div class="info">
+            <strong>ℹ️ Instructions:</strong><br>
+            1. Click each test button below to verify endpoints are working<br>
+            2. Check the results to see if data is being returned correctly<br>
+            3. All tests should show green "Success" messages<br>
+            4. If you see red "Error" messages, the backend needs redeployment
+        </div>
+
+        <div class="test-group">
+            <h2>1. Test Properties Endpoint</h2>
+            <button onclick="testGetProperties()">Test GET /properties</button>
+            <button onclick="testCreateProperty()">Test CREATE Property</button>
+            <div id="properties-result"></div>
+        </div>
+
+        <div class="test-group">
+            <h2>2. Test Initialization Endpoint</h2>
+            <button onclick="testInitialize()">Test Initialize Property 1</button>
+            <div id="initialize-result"></div>
+        </div>
+
+        <div class="test-group">
+            <h2>3. Test Login Endpoint</h2>
+            <button onclick="testLogin()">Test Login (admin/admin123)</button>
+            <div id="login-result"></div>
+        </div>
+
+        <div class="test-group">
+            <h2>4. Test Users Endpoint</h2>
+            <button onclick="testGetUsers()">Test GET /users/Property 1</button>
+            <div id="users-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://wyfqvbzdawpimomfvlmh.supabase.co/functions/v1/make-server-68939c29';
+        const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5ZnF2YnpkYXdwaW1vbWZ2bG1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwNDI0MjMsImV4cCI6MjA1MjYxODQyM30.hEiB7a4nHPbTiMFc_GzYITdXOwQh4FX6sEFxPTh3N48';
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${ANON_KEY}`
+                }
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            const response = await fetch(`${API_BASE}${endpoint}`, options);
+            return await response.json();
+        }
+
+        function showResult(elementId, result, isError = false) {
+            const el = document.getElementById(elementId);
+            el.className = isError ? 'result error' : 'result success';
+            el.textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function testGetProperties() {
+            try {
+                const result = await apiCall('/properties');
+                showResult('properties-result', result, !result.success);
+                if (result.success) {
+                    alert(`✅ Success! Found ${result.data.length} property/properties`);
+                }
+            } catch (error) {
+                showResult('properties-result', { error: error.message }, true);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function testCreateProperty() {
+            const name = prompt('Enter property name (e.g., "Property 2"):');
+            if (!name) return;
+            
+            try {
+                const newProperty = {
+                    id: `prop-${Date.now()}`,
+                    name: name,
+                    isDefault: false,
+                    createdDate: new Date().toISOString()
+                };
+                const result = await apiCall('/properties', 'POST', newProperty);
+                showResult('properties-result', result, !result.success);
+                if (result.success) {
+                    alert(`✅ Property "${name}" created successfully!`);
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                showResult('properties-result', { error: error.message }, true);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function testInitialize() {
+            try {
+                const result = await apiCall('/initialize/Property 1', 'POST');
+                showResult('initialize-result', result, !result.success);
+                if (result.success) {
+                    alert('✅ Property initialized successfully!');
+                }
+            } catch (error) {
+                showResult('initialize-result', { error: error.message }, true);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const result = await apiCall('/login', 'POST', {
+                    username: 'admin',
+                    password: 'admin123',
+                    property: 'Property 1'
+                });
+                showResult('login-result', result, !result.success);
+                if (result.success) {
+                    alert('✅ Login successful!');
+                } else {
+                    alert('❌ Login failed: ' + result.error);
+                }
+            } catch (error) {
+                showResult('login-result', { error: error.message }, true);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function testGetUsers() {
+            try {
+                const result = await apiCall('/users/Property 1');
+                showResult('users-result', result, !result.success);
+                if (result.success) {
+                    alert(`✅ Found ${result.data.length} users`);
+                }
+            } catch (error) {
+                showResult('users-result', { error: error.message }, true);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // Auto-run initial test on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('Running auto-test...');
+                testGetProperties();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Build Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .check {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success { background: #f0fdf4; border-color: #22c55e; }
+        .error { background: #fef2f2; border-color: #ef4444; }
+        h1 { color: #1e293b; }
+        pre { background: #f1f5f9; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .timestamp { color: #64748b; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Casino CMS - Build Verification</h1>
+    <p class="timestamp">Generated: <script>document.write(new Date().toLocaleString());</script></p>
+    
+    <div class="check">
+        <h2>✅ Build Information</h2>
+        <p><strong>Build Date:</strong> <span id="buildDate"></span></p>
+        <p><strong>Version Check:</strong> <span id="versionCheck">Loading...</span></p>
+        <p><strong>Currency Default:</strong> <span id="currencyCheck">FCFA (Expected)</span></p>
+    </div>
+
+    <div class="check">
+        <h2>📋 Troubleshooting Steps</h2>
+        <ol>
+            <li><strong>Verify files on cPanel:</strong>
+                <ul>
+                    <li>Check <code>/public_html/Casino/assets/</code> folder</li>
+                    <li>Look at the timestamp of JavaScript files (should be TODAY)</li>
+                    <li>File names should have unique hashes like <code>index-abc123.js</code></li>
+                </ul>
+            </li>
+            <li><strong>Clear browser cache completely:</strong>
+                <ul>
+                    <li>Windows: <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd></li>
+                    <li>Mac: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Delete</kbd></li>
+                    <li>Select "All time" and clear cached files</li>
+                </ul>
+            </li>
+            <li><strong>Try Incognito/Private mode</strong> to bypass cache</li>
+            <li><strong>Check different browser</strong> (Chrome, Firefox, Edge)</li>
+        </ol>
+    </div>
+
+    <div class="check">
+        <h2>🔧 Correct Upload Process</h2>
+        <pre>1. Delete OLD dist folder:
+   rmdir /s /q dist
+
+2. Rebuild:
+   npm run build
+
+3. In cPanel File Manager:
+   - Navigate to /public_html/Casino/
+   - DELETE ALL OLD FILES (important!)
+   - Upload new dist.zip
+   - Extract
+
+4. Verify .htaccess exists in Casino folder
+
+5. Hard refresh browser: Ctrl + Shift + R</pre>
+    </div>
+
+    <div class="check error">
+        <h2>⚠️ Common Issues</h2>
+        <ul>
+            <li><strong>Files not updating?</strong> Make sure you're uploading to <code>/public_html/Casino/</code> not a subfolder</li>
+            <li><strong>Still showing PHP?</strong> The old JavaScript files are still cached or not replaced</li>
+            <li><strong>.htaccess missing?</strong> Make sure to rename from <code>htaccess.txt</code> before building</li>
+            <li><strong>JavaScript error?</strong> Old code is still running - cache issue</li>
+        </ul>
+    </div>
+
+    <div class="check success">
+        <h2>✅ Expected Results After Fix</h2>
+        <ul>
+            <li>Summary cards show: <strong>"FCFA 0"</strong> (not "PHP 0")</li>
+            <li>No JavaScript errors in console</li>
+            <li>FloatForm modal opens without errors</li>
+        </ul>
+    </div>
+
+    <script>
+        // Set build date
+        document.getElementById('buildDate').textContent = new Date().toLocaleString();
+        
+        // Version check
+        const buildTimestamp = Date.now();
+        localStorage.setItem('cms_build_timestamp', buildTimestamp);
+        document.getElementById('versionCheck').textContent = 'Build #' + buildTimestamp;
+    </script>
+</body>
+</html>

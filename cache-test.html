@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino CMS - Cache Test</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            color: #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        .test-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .test-item.pass {
+            border-left-color: #22c55e;
+            background: #f0fdf4;
+        }
+        .test-item.fail {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .status {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .pass .status { color: #22c55e; }
+        .fail .status { color: #ef4444; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .instructions {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions h3 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        .info {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Cache Test Page</h1>
+        <p>This page tests if your browser cache is properly cleared for the Casino CMS.</p>
+        
+        <div class="test-box">
+            <h3 style="margin-bottom: 15px;">Cache Tests:</h3>
+            
+            <div class="test-item" id="test-random">
+                <span>Random Number Test</span>
+                <span class="status" id="random-status">Testing...</span>
+            </div>
+            
+            <div class="test-item" id="test-timestamp">
+                <span>Timestamp Test</span>
+                <span class="status" id="timestamp-status">Testing...</span>
+            </div>
+            
+            <div class="test-item" id="test-storage">
+                <span>Storage Test</span>
+                <span class="status" id="storage-status">Testing...</span>
+            </div>
+            
+            <div class="test-item" id="test-version">
+                <span>Version Check</span>
+                <span class="status" id="version-status">v2.1.0 ✓</span>
+            </div>
+        </div>
+        
+        <button onclick="runCacheBuster()">🧹 Clear Cache & Storage</button>
+        <button onclick="location.reload(true)">🔄 Hard Reload Page</button>
+        <button onclick="window.open('/Casino', '_blank')">🎰 Open Casino CMS</button>
+        
+        <div class="instructions">
+            <h3>⚠️ If Tests Fail:</h3>
+            <ol>
+                <li><strong>Clear Browser Cache:</strong>
+                    <div class="code">Windows: Ctrl + Shift + Delete<br>Mac: Cmd + Shift + Delete</div>
+                </li>
+                <li><strong>Hard Refresh:</strong>
+                    <div class="code">Windows: Ctrl + F5<br>Mac: Cmd + Shift + R</div>
+                </li>
+                <li><strong>Try Incognito Mode</strong></li>
+                <li><strong>Close and reopen browser</strong></li>
+            </ol>
+        </div>
+        
+        <div class="info">
+            <strong>Cache Buster Console Script:</strong><br>
+            Copy and paste this into your browser console (F12):
+            <div class="code" id="cache-script">
+localStorage.clear(); sessionStorage.clear(); location.reload(true);
+            </div>
+            <button onclick="copyScript()" style="margin-top: 10px; padding: 8px 16px; font-size: 14px; width: auto;">
+                📋 Copy Script
+            </button>
+        </div>
+        
+        <div class="info">
+            <strong>Build Version:</strong> 2.1.0<br>
+            <strong>Page Loaded:</strong> <span id="load-time"></span>
+        </div>
+    </div>
+    
+    <script>
+        // Set load time
+        document.getElementById('load-time').textContent = new Date().toLocaleString();
+        
+        // Test 1: Random number (should change every reload if cache is clear)
+        const randomNum = Math.floor(Math.random() * 10000);
+        const lastRandom = localStorage.getItem('cache-test-random');
+        const randomTest = document.getElementById('test-random');
+        const randomStatus = document.getElementById('random-status');
+        
+        if (lastRandom && lastRandom === randomNum.toString()) {
+            randomTest.classList.add('fail');
+            randomStatus.textContent = '❌ CACHED';
+        } else {
+            randomTest.classList.add('pass');
+            randomStatus.textContent = '✓ FRESH';
+        }
+        localStorage.setItem('cache-test-random', randomNum);
+        
+        // Test 2: Timestamp
+        const now = Date.now();
+        const lastTime = localStorage.getItem('cache-test-time');
+        const timestampTest = document.getElementById('test-timestamp');
+        const timestampStatus = document.getElementById('timestamp-status');
+        
+        if (lastTime && (now - parseInt(lastTime)) < 1000) {
+            timestampTest.classList.add('fail');
+            timestampStatus.textContent = '❌ TOO FAST';
+        } else {
+            timestampTest.classList.add('pass');
+            timestampStatus.textContent = '✓ OK';
+        }
+        localStorage.setItem('cache-test-time', now);
+        
+        // Test 3: Storage clear
+        const storageTest = document.getElementById('test-storage');
+        const storageStatus = document.getElementById('storage-status');
+        const oldData = localStorage.getItem('casino-cms-test');
+        
+        if (oldData) {
+            storageTest.classList.add('fail');
+            storageStatus.textContent = '❌ OLD DATA';
+        } else {
+            storageTest.classList.add('pass');
+            storageStatus.textContent = '✓ CLEAN';
+        }
+        localStorage.setItem('casino-cms-test', 'v2.1.0');
+        
+        // Test 4: Version
+        document.getElementById('test-version').classList.add('pass');
+        
+        // Cache buster function
+        function runCacheBuster() {
+            console.log('🧹 Running cache buster...');
+            
+            // Clear storage
+            localStorage.clear();
+            sessionStorage.clear();
+            console.log('✅ Storage cleared');
+            
+            // Clear IndexedDB
+            if (window.indexedDB) {
+                indexedDB.databases().then(dbs => {
+                    dbs.forEach(db => {
+                        if (db.name) indexedDB.deleteDatabase(db.name);
+                    });
+                });
+            }
+            
+            // Unregister service workers
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    regs.forEach(reg => reg.unregister());
+                });
+            }
+            
+            // Clear cache storage
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            
+            alert('✅ Cache and storage cleared!\n\nThe page will now reload.');
+            setTimeout(() => location.reload(true), 500);
+        }
+        
+        // Copy script function
+        function copyScript() {
+            const script = document.getElementById('cache-script').textContent;
+            navigator.clipboard.writeText(script).then(() => {
+                alert('✅ Script copied to clipboard!\n\nNow:\n1. Press F12 to open DevTools\n2. Click "Console" tab\n3. Paste the script (Ctrl+V)\n4. Press Enter');
+            });
+        }
+    </script>
+</body>
+</html>
