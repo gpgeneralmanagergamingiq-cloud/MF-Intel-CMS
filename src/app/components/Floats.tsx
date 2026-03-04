@@ -29,6 +29,7 @@ import {
 import { ThermalReceiptDual } from "./ThermalReceiptDual";
 import { sendEndOfDayReportToManagement } from "../utils/emailService";
 import { useApi } from "../hooks/useApi";
+import FloatForm from "./FloatForm";
 const PROPERTY_NAME = "Grand Palace Casino";
 
 interface ChipDenomination {

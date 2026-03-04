@@ -88,7 +88,7 @@ const getCurrentGamingDay = (): string => {
   return `${year}-${month}-${day}`;
 };
 
-export function FloatForm({ onSubmit, onCancel, openTables, allFloats, onTriggerCloseFloat, currentUser }: FloatFormProps) {
+export default function FloatForm({ onSubmit, onCancel, openTables, allFloats, onTriggerCloseFloat, currentUser }: FloatFormProps) {
   // Hardcoded for Grand Palace Casino
   const currentProperty = "Grand Palace Casino";
   const availableProperties = [PROPERTY_NAME];
