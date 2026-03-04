@@ -1,47 +1,36 @@
-name: 🚀 Auto-Deploy to Cloudflare Pages
+name: Auto-Deploy to Cloudflare Pages
 
 on:
   push:
     branches:
       - main
-      - master
-  workflow_dispatch: # Allow manual deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: 📦 Build and Deploy
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🟢 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
 
-      - name: 📦 Install dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          npm rebuild esbuild
 
-      - name: 🔨 Build application
+      - name: Build application
         run: npm run build
         env:
           NODE_ENV: production
 
-      - name: 🚀 Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: mfintelcms
-          directory: dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-
-      - name: ✅ Deployment Complete
-        run: |
-          echo "🎉 Deployment successful!"
-          echo "🌐 Live at: https://app.mfintelcms.com"
-          echo "⚡ All properties updated automatically!"
+          command: pages deploy dist --project-name=mf-intel-cms --branch=main
