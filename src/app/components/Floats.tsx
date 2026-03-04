@@ -1,7 +1,7 @@
-import { ThermalReceiptDual } from "./ThermalReceiptDual";
-import { sendEndOfDayReportToManagement } from "../utils/emailService";
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router";
+import {
+  DollarSign, } from "react-router";
 import {
   DollarSign,
   Plus,
