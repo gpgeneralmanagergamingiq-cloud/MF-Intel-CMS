@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useOutletContext } from "react-Router";
+import { useOutletContext } from "react-router";
 import {
   DollarSign,
   TrendingUp,
