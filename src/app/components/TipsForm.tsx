@@ -26,7 +26,7 @@ interface TipsFormProps {
 // Chip denominations
 const CHIP_DENOMINATIONS = [10000000, 5000000, 1000000, 500000, 100000, 50000, 25000, 10000, 5000, 1000, 500, 250];
 
-export function TipsForm({ onSubmit, onCancel, currentUser }: TipsFormProps) {
+export default function TipsForm({ onSubmit, onCancel, currentUser }: TipsFormProps) {
   const [formData, setFormData] = useState<Omit<TipsData, 'id' | 'timestamp'>>({
     pitBossName: currentUser?.username || "",
     tableName: "",
